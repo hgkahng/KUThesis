@@ -1,0 +1,95 @@
+% 사용 가능한 옵션 리스트는 아래와 같습니다.
+% 'doctor - master': 박사인가 석사인가
+% 'final': 최종본일 경우 추가
+% 'twosides - oneside': 양면인가 단면인가
+%
+% 예제
+% \documentclass[master,final,oneside]{KUThesis}
+
+% 기본옵션은 [doctor,twosides] 입니다.
+\documentclass[doctor,final,oneside]{KUThesis}
+
+\usepackage{subfig}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{multirow}
+\usepackage{tabularx}
+%\usepackage{ltablex}
+\usepackage{longtable}
+\usepackage{booktabs}
+\usepackage{adjustbox}
+\usepackage{colortbl}
+\usepackage{rotating}
+\usepackage{url}
+
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\theoremstyle{plain}
+\newtheorem{proposition}{Proposition}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}
+\renewcommand{\bibname}{References}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                   아래 정보를 꼭 바꾸세요!                   %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% 첫번째 인수의 숫자
+% 0 : 제목이 10자 이하일 경우
+% 1 : 제목이 10자 이상 1줄일 경우
+% 2 : 제목이 2줄 이상일 경우
+\title{2}{
+Thesis Title
+}
+
+% 본인의 이름 성,이름 순으로 한글자씩
+\author[chinese]{都}{亨}{綠}
+\author[english]{Hyungrok Do}{}
+
+% 지도교수님 성함 {한자이름}{영문이름}
+\advisor{金性範}{Seoung Bum Kim}
+
+% 전공
+\department{IME}{}
+
+% 졸업년월
+\graduateDate{2020}{8}
+
+% 제출 연,월,일
+\submitDate{2020}{6}{12}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                          여기까지!                           %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{etoolbox}
+\newcounter{bibcount}
+\makeatletter
+\patchcmd{\@lbibitem}{\item[}{\item[\hfil\stepcounter{bibcount}{\thebibcount.}}{}{}
+\setlength{\bibhang}{2\parindent}
+\renewcommand\NAT@bibsetup%
+   [1]{\setlength{\leftmargin}{\bibhang}\setlength{\itemindent}{-\parindent}%
+       \setlength{\itemsep}{\bibsep}\setlength{\parsep}{\z@}}
+\makeatother
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%         본문 파일을 이 아래에 추가하세요!        %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% 꼭 addContents함수를 이용해서 추가해야 양면출력이 제대로 됩니다!
+\addContents{Introduction}
+\addContents{Chapter1}
+\addContents{Chapter2}
+\addContents{Chapter3}
+\addContents{Conclusions}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%                  여기까지 추가                   %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\end{document}

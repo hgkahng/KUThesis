@@ -1,0 +1,521 @@
+% -*- TeX:UTF-8 -*-
+%%  고려대학교 석·박사 학위논문 LaTeX 템플릿
+%%
+%%           버전: 1.08
+%%
+%%         작성자: 장 진희 ( geniejhang@majimak.com )
+%%           날짜: 2013. 08. 11
+%%
+%%  필요한 패키지: TeXLive 2013 or later + ko.TeX
+%%
+%%       참고자료: KAIST Thesis Templete for LaTeX version 0.4
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%  여러분의 참여가 이 템플릿을 더욱 완벽하게 만들 수 있습니다. 
+%%
+%%          https://github.com/geniejhang/KUThesis
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\NeedsTeXFormat{LaTeX2e}[1995/12/01]
+\ProvidesClass{KUThesis}
+
+%% 옵션 선언을 위한 변수 선언
+\newif\if@isDoctor
+\newif\if@isFinal
+\newif\if@isPdfdoc
+\newif\if@isDebug
+\newif\if@isTwosides
+
+%% 새 옵션 모음 - doctor|master, final|draft
+\DeclareOption{doctor}       {\@isDoctortrue}
+\DeclareOption{master}       {\@isDoctorfalse}
+\DeclareOption{final}        {\@isFinaltrue}
+\DeclareOption{pdfdoc}       {\@isPdfdoctrue}
+\DeclareOption{debug}        {\@isDebugtrue}
+\DeclareOption{twosides}     {\@isTwosidestrue}
+\DeclareOption{oneside}      {\@isTwosidesfalse}
+
+%% leqno,fleqn,openbib 옵션은 그대로 report 클래스에 전달
+\DeclareOption{leqno}  {\PassOptionsToClass{leqno}  {report}}
+\DeclareOption{fleqn}  {\PassOptionsToClass{fleqn}  {report}}
+\DeclareOption{openbib}{\PassOptionsToClass{openbib}{report}}
+
+%% doctor,draft,twoside가 기본값
+\@isDoctortrue
+\@isFinalfalse
+\@isTwosidestrue
+\ProcessOptions
+
+%% 11pt,onecolumn,oneside 옵션으로 report 클래스 불러오기
+\if@isTwosides
+  \LoadClass[12pt,onecolumn,twoside]{report}
+\else
+  \LoadClass[12pt,onecolumn,oneside]{report}
+\fi
+
+%% 여백 체크용 디버그 옵션
+\if@isDebug
+  \usepackage[a4,frame,center]{crop}
+\fi
+
+\usepackage[titles]{tocloft}
+\renewcommand\cftfignumwidth{18pt}
+\renewcommand{\cftdotsep}{1}
+\renewcommand\cfttabnumwidth{18pt}
+
+%%
+\usepackage{titlesec}
+\titleformat{\chapter}[block]
+  {\normalfont\large\bfseries\centering}
+  {Chapter \thechapter\linebreak}{1em}
+  {\noindent\large\centering}[\vspace{3ex}]
+\titlespacing*{\chapter}{0pt}{0pt}{0pt}
+
+\titleformat*{\section}{\bfseries}
+\titleformat*{\subsection}{\bfseries}
+\titleformat*{\subsubsection}{\bfseries}
+\titleformat*{\paragraph}{\bfseries}
+\titleformat*{\subparagraph}{\bfseries}
+
+%% Table of contents, List of figures, List of tables를 Table of Contents에 추가
+\usepackage{tocbibind}
+
+%% 편집용지 설정 - 좀 바꿔야 할 듯 나중에
+\usepackage[inner = 25mm,       outer = 15mm,
+            top = 30mm,       bottom = 30mm,
+       paperwidth = 176mm, paperheight = 250mm]{geometry}
+
+%% 줄간격 설정
+%\linespread{3.0}
+\RequirePackage[doublespacing]{setspace} 
+
+%% 들여쓰기
+\usepackage{indentfirst}
+\setlength\parindent{0em}
+
+%% bibliography
+%\usepackage[square,comma,numbers,sort&compress]{natbib}
+\usepackage[sort, compress]{natbib}
+\usepackage{chngcntr}
+\counterwithout{figure}{chapter}
+\counterwithout{table}{chapter}
+\usepackage{caption} 
+\captionsetup[table]{skip=8pt}
+
+\RequirePackage{ifthen,changepage}       % 추가 패키지 설정
+\RequirePackage{graphicx,xcolor}
+\RequirePackage{amsmath,amssymb,textcomp,bm}
+\RequirePackage[pagewise]{lineno}
+\RequirePackage{fix-cm}
+\RequirePackage[cjk]{kotex}
+
+%% PDF 파일로 문서를 만들었을 때 링크 활성화
+\if@isPdfdoc
+  \RequirePackage[unicode,%
+       pageanchor=false,%
+           pdftex=true,%
+        bookmarks=true,%
+       colorlinks=true%
+    ]{hyperref}
+\else
+\fi
+
+\newcounter{dummy}
+\AtBeginDocument{%                         % \begin{document}와 함께 실행
+  \checkparameters                         % 문서 변수가 올바른지 점검
+  \newgeometry{       left = 30mm,
+                     right = 30mm,
+                       top = 30mm,
+                    bottom = 30mm}        % 여백 다른 페이지용 여백
+
+  \pagenumbering{gobble}
+  \makefrontcover                          % 앞표지 생성
+  \makefrontcover                          % 앞표지 생성
+  \maketitle                               % 속표지 생성
+  \makeapproval
+  \makeinnercover                          
+  %\refstepcounter{dummy}
+  %\renewcommand{\vspace}[2]
+  \pagenumbering{roman}
+  \setcounter{page}{1}
+  \makeabstract                            % 초록 페이지 생성
+
+  \raggedbottom
+  \makecontents
+  
+  \pagenumbering{arabic}
+  \setcounter{page}{1}
+  %\pagenumbering{arabic}
+  %\setcounter{page}{1}
+}
+
+\AtEndDocument{                             % \end{document}와 함께 실행
+  %\bibliographystyle{apsrev4-1}
+  
+ \bibliographystyle{apalike}
+ \bibliography{library.bib}
+  \addevenpage
+
+  %\if@isFinal
+    %\refstepcounter{dummy}
+    %\makeacknowledgement
+  %\fi
+}
+
+%% 고려대학교 공식 영문명칭
+\newcommand{\@koreauniv}{Korea University}
+
+% @command title 논문 제목
+\renewcommand{\title}[2] {
+  \ifnum#1=2
+    \newcommand{\@titleSize}{21pt}
+    \newcommand{\@univSize}{18pt}
+  \else
+    \ifnum#1=0
+      \newcommand{\@titleSize}{30pt}
+    \else
+      \newcommand{\@titleSize}{28pt}
+    \fi
+    \newcommand{\@univSize}{20pt}
+  \fi
+  \newcommand{\@titleEng}{#2}
+}
+\@onlypreamble{\title}
+
+% @command author 저자 이름
+% @param family_name, given_name 성, 이름을 구분해서 입력
+% @options [default: (none)]
+% - korean: 한글이름 | chinese: 한문이름 | english: 영문이름
+\renewcommand{\author}[4][chinese] {%
+    \ifthenelse{\equal{#1}{chinese}}
+        {\newcommand{\@authorChnF}{#2}
+         \newcommand{\@authorChnS}{#3}
+         \newcommand{\@authorChnT}{#4}
+         \ifthenelse{\equal{#4}{}}{
+           \newcommand{\@authorChn}{#2#3}
+         }{
+           \newcommand{\@authorChn}{#2#3#4}
+         }{}%
+         \ifthenelse{\equal{#4}{}}{
+           \newcommand{\@authorChnSpace}{#2\ #3}
+         }{
+           \newcommand{\@authorChnSpace}{#2\ #3\ #4}
+         }}{}%
+    \ifthenelse{\equal{#1}{english}}
+        {\newcommand{\@authorEngFN}{#2}
+         \newcommand{\@authorEngGN}{#3}
+         \ifthenelse{\equal{#4}{}}{
+           \newcommand{\@authorEng}{#3\ #2}
+         }{
+           \newcommand{\@authorEng}{#3\ #4\ #2}
+         }}{}%
+}
+\@onlypreamble{\author}
+
+% @command advisor 지도교수 이름 (복수가능)
+% @options [default: major]
+% - major: 주 지도교수  | coopr: 부 지도교수 (공동지도교수 경우)
+\newcommand{\advisor}[2]{%
+  \newcommand{\@advisorMajorChn}{#1}  % 영문이름 저장
+  \newcommand{\@advisorMajorEng}{#2}  % 영문이름 저장
+}
+\@onlypreamble{\advisor}
+
+\if@isDoctor
+  \newcommand{\@degreeChn}{博}
+  \newcommand{\@degreeEng}{Doctor}
+\else
+  \newcommand{\@degreeChn}{碩}
+  \newcommand{\@degreeEng}{Master}
+\fi
+
+% @command department 
+%
+\newcommand{\department}[2] {%
+    \ifthenelse{\equal{#1}{IME}}
+        {\newcommand{\@deptNameEng}{Industrial Management Engineering}
+         \newcommand{\@deptNameChn}{産業經營工學科}}
+}
+\@onlypreamble{\department}
+
+% @command referee 심사위원 (석사과정 3인, 박사과정 5인)
+\newcommand{\referee}[2][1] {%
+    \ifthenelse{\equal{#1}{1}}{\newcommand{\@refereeChief} {#2}} {}%
+    \ifthenelse{\equal{#1}{2}}{\newcommand{\@refereeSecond}{#2}} {}%
+    \ifthenelse{\equal{#1}{3}}{\newcommand{\@refereeThird} {#2}} {}%
+    \ifthenelse{\equal{#1}{4}}{\newcommand{\@refereeFourth}{#2}} {}%
+    \ifthenelse{\equal{#1}{5}}{\newcommand{\@refereeFifth} {#2}} {}%
+}
+\@onlypreamble{\referee}
+
+% @command approvaldate 지도교수논문승인일
+% @param year,month,day 연,월,일 순으로 입력
+\newcommand{\approvaldate}[3] {%
+    \newcommand{\@approvalYear}{#1}
+    \newcommand{\@approvalMonth}{#2}
+    \newcommand{\@approvalDay}{#3}
+}
+\@onlypreamble{\approvaldate}
+
+% @command gradyear 졸업년도
+\newcommand{\graduateDate}[2]{
+  \newcommand{\@graduateYear}{#1}
+  \newcommand{\@graduateMonth}{#2}
+}
+\@onlypreamble{\graduateDate}
+
+% @command subdate 제출일자
+\newcommand{\submitDate}[3]{
+  \newcommand{\@submitYear}{#1}
+  \newcommand{\@submitMonth}{#2}
+  \newcommand{\@submitDay}{#3}
+}
+\@onlypreamble{\submitDate}
+
+% @command 본문 추가
+\newcommand{\addContents}[1]{
+  \setlength\parindent{5mm}
+  \input{#1}
+  \setlength\parindent{0mm}
+
+  \addevenpage
+}
+
+%%
+%% 필요한 정보 중에 누락된 것이 없는지 점검
+%%
+\newcommand{\checkparameters}{%
+    \@ifundefined{@titleEng}{%
+        \ClassError{KUThesis}{The english title is not found}{}}{}
+    \@ifundefined{@authorChn}{%
+        \ClassError{KUThesis}{The chinese name of the author is not found}{}}{}
+    \@ifundefined{@authorEng}{%
+        \ClassError{KUThesis}{The english name of the author is not found}{}}{}
+    \@ifundefined{@advisorMajorEng}{%
+        \ClassError{KUThesis}{The english name of the major advisor is not found}{}}{}
+    \@ifundefined{@advisorMajorChn}{%
+        \ClassError{KUThesis}{The chinese name of the major advisor is not found}{}}{}
+}
+
+%%
+%% 영문 날짜 표기
+%%
+\newcommand{\@dateUSenglish}[2]{%  % 미국식 날짜 표기
+    \newcommand{\@year}{#1}%
+    \newcommand{\@month}{#2}%
+    \ifcase\@month \or
+        January \or February \or March \or April \or May \or June \or
+        July \or August \or September \or October \or November \or December \fi
+    \@year
+}
+
+%%
+%% 빈 페이지 생성
+%%
+\newcommand{\emptypage}{
+  \newpage
+  \thispagestyle{empty}
+  \hbox{}
+  \newpage
+}
+
+%%
+%% 양면 출력일 때 홀수 페이질 경우 빈 페이지 추가
+%%
+\newcommand{\addevenpage}{
+  \if@isTwosides
+    \checkoddpage
+    \ifoddpage
+      \emptypage
+    \fi
+  \else
+    \newpage
+  \fi
+}
+
+%%
+%% 앞표지 생성
+%%
+\newcommand{\makefrontcover}{%
+    \newpage
+    \renewcommand{\baselinestretch}{2.5}%
+    %\thispagestyle{empty}
+    \hspace*{-15mm}\begin{minipage}[t][16pt][t]{142mm}
+      \begin{center}
+        \fontsize{16pt}{16pt}\selectfont\bf{\@degreeChn\ 士\ 學\ 位\ 論\ 文}
+        \\[5mm]
+        \fontsize{\@titleSize}{\@titleSize}\selectfont{\bf \@titleEng}
+      \end{center}
+    \end{minipage}\vfill
+    \begin{minipage}[b][110mm][b]{112mm}
+      \begin{center}
+        \fontsize{\@univSize}{\@univSize}\selectfont{\bf 高麗大學校 大學院}
+        \\[10mm]
+        \fontsize{16pt}{16pt}\selectfont{\bf \@deptNameChn}
+        \\[10mm]
+        \fontsize{16pt}{16pt}\selectfont{\bf \@authorChnSpace}
+        \\[10mm]
+        \fontsize{14pt}{14pt}\selectfont{\bf \@graduateYear年\ \@graduateMonth月}%\ \@submitDay日}
+        \\[30mm]
+      \end{center}
+    \end{minipage}
+    \addevenpage
+}
+
+\newcommand{\makeinnercover}{%
+    \newpage
+    \renewcommand{\baselinestretch}{2.5}%
+    \hspace*{-15mm}\begin{minipage}[t][50mm][t]{142mm}
+        \begin{center}
+            \fontsize{\@titleSize}{\@titleSize}\selectfont{\bf \@titleEng}
+            \\[20mm]
+            \fontsize{14pt}{14pt}\selectfont{\bf by}
+            %\\[5mm]
+            \fontsize{14pt}{14pt}\selectfont{\bf \@authorEng}
+            \\[2mm]
+            \fontsize{14pt}{14pt}\selectfont{\bf School of \@deptNameEng}
+            \\[2mm]
+            %\fontsize{14pt}{14pt}\selectfont{\bf Graduate School}
+            %\\[5mm]
+            \fontsize{14pt}{14pt}\selectfont{\bf \@koreauniv}
+            %\\[10mm]
+            %\fontsize{14pt}{14pt}\selectfont{\bf
+            %\@dateUSenglish{\@graduateYear}{\@graduateMonth}}
+        \end{center}
+    \end{minipage}\vfill
+    \addevenpage
+}
+
+%%
+%% 속표지 생성
+%%
+\renewcommand{\maketitle}{%
+    \newpage
+    \renewcommand{\baselinestretch}{2.5}%
+    %\thispagestyle{empty}
+    \hspace*{-15mm}\begin{minipage}[t][16pt][t]{142mm}
+      \begin{center}
+        \fontsize{16pt}{16pt}\selectfont\bf{\@advisorMajorChn\ 敎授指導}
+        \\[5mm]
+        \fontsize{16pt}{16pt}\selectfont\bf{\@degreeChn\ 士\ 學\ 位\ 論\ 文}
+        \\[5mm]
+        \fontsize{\@titleSize}{\@titleSize}\selectfont{\bf \@titleEng}
+        \\[30mm]
+        \fontsize{16pt}{16pt}\selectfont{\bf 이 論文을 工學 \@degreeChn士學位 論文으로 提出함}
+        \\[10mm]
+        \fontsize{14pt}{14pt}\selectfont{\bf \@submitYear年\ \@submitMonth月\ \@submitDay日}
+        \\[3mm]
+        \fontsize{\@univSize}{\@univSize}\selectfont{\bf 高麗大學校 大學院}
+        \\[3mm]
+        \fontsize{16pt}{16pt}\selectfont{\bf \@deptNameChn}
+        \\[3mm]
+        \fontsize{16pt}{16pt}\selectfont{\bf \@authorChnSpace}
+        %\fontsize{14pt}{14pt}\selectfont{\bf \hspace{10mm} (印)}
+      \end{center}
+    \end{minipage}
+    \addevenpage
+}
+
+%%
+%% 학위논문 심사완료 검인서 생성
+%%
+\newcommand{\makeapproval}{%
+  \newpage
+  %\thispagestyle{empty}
+  \renewcommand{\baselinestretch}{1.3}
+  \begin{minipage}[t][20mm][t]{112mm}
+    \begin{center}
+      \fontsize{15.5pt}{15.5pt}\selectfont{\bf \@authorChn의 工學 \@degreeChn士學位 論文}
+      \\[10mm]
+      \fontsize{15.5pt}{15.5pt}\selectfont{\bf 審査를 完了함}
+      \\[30mm]
+      \fontsize{14pt}{14pt}\selectfont{\bf \@submitYear年\ \@submitMonth月\ \@submitDay日}
+      \\[20mm]
+      \underline{
+        \fontsize{16pt}{16pt}\selectfont{\bf 委員長}
+        \fontsize{14pt}{14pt}\selectfont{\hspace{60mm}\bf (印)}
+      }
+      \\[10mm]
+      \underline{
+        \fontsize{16pt}{16pt}\selectfont{\bf 委　員}
+        \fontsize{14pt}{14pt}\selectfont{\hspace{60mm}\bf (印)}
+      }
+      \\[10mm]
+      \underline{
+        \fontsize{16pt}{16pt}\selectfont{\bf 委　員}
+        \fontsize{14pt}{14pt}\selectfont{\hspace{60mm}\bf (印)}
+      }
+      \if@isDoctor
+        \\[10mm]
+        \underline{
+          \fontsize{16pt}{16pt}\selectfont{\bf 委　員}
+          \fontsize{14pt}{14pt}\selectfont{\hspace{60mm}\bf (印)}
+        }
+        \\[10mm]
+        \underline{
+          \fontsize{16pt}{16pt}\selectfont{\bf 委　員}
+          \fontsize{14pt}{14pt}\selectfont{\hspace{60mm}\bf (印)}
+        }
+      \else\fi
+    \end{center}
+  \end{minipage}
+  \addevenpage
+}
+
+%%
+%% 초록 페이지 생성
+%%
+\newcommand{\makeabstract}{%
+  \newpage
+  %\thispagestyle{empty}
+  \addcontentsline{toc}{chapter}{Abstract}
+  %\vspace*{\fill}
+  \begin{center}
+    \fontsize{16pt}{16pt}\selectfont{\bf Abstract}
+  \end{center}
+
+  \setlength\parindent{5mm}
+  \fontsize{11pt}{11pt}\selectfont{\indent\input{abstract}}
+  \setlength\parindent{0mm}
+  \vspace*{\fill}
+  \addevenpage
+}
+
+%%
+%% 목차 일괄 생성
+%%
+\newcommand{\makecontents}{%            % TOC, LOT, LOF 생성
+  \doublespacing
+  \tableofcontents
+  \addevenpage
+
+  \let\oldnumberline\numberline
+  \renewcommand{\numberline}{\figurename.~\oldnumberline}
+  \listoffigures
+
+  \addevenpage
+  \renewcommand{\numberline}{\tablename.~\oldnumberline}%
+  \listoftables
+
+  \renewcommand{\numberline}{\oldnumberline}
+  \addevenpage
+}
+
+%%
+%% 감사의 글 페이지 생성
+%%
+\newcommand{\makeacknowledgement}{%
+  \newpage
+  \thispagestyle{empty}
+  \addcontentsline{toc}{chapter}{Acknowledgement}
+  \pagenumbering{gobble}
+  \begin{center}
+    \fontsize{16pt}{16pt}\selectfont{\bf Acknowledgement}
+  \end{center}
+
+  \setlength\parindent{5mm}
+  \fontsize{11pt}{11pt}\selectfont{\indent\input{acknowledgement}}
+  \setlength\parindent{0mm}
+  \addevenpage
+}
